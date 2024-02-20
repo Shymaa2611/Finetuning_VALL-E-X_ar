@@ -209,23 +209,6 @@ if __name__ == "__main__":
     
     #trainer=train_func(train_dataset,test_dataset)
     #trainer.train()
-"""     opt = Adam(model.parameters(), lr=1e-5)
-    loss_fn = nn.CrossEntropyLoss()
-    for epoch in range(2):
-        for batch in train_loader:
-            x=batch['text_tokens']
-            x_lens=batch['text_tokens_lens']
-            y=batch['audio_features']
-            y_lens=batch['audio_features_lens']
-            #print("x dim =)
-            outputs = model(x,x_lens,y,y_lens)
-            loss = outputs.loss
-            opt.zero_grad()
-            loss.backward()
-            opt.step()
-
-        print(f"Epoch:{epoch} {batch}")
- """
 
 
 
