@@ -1,0 +1,101 @@
+VALLE(
+  (ar_text_embedding): TokenEmbedding(
+    (dropout): Dropout(p=0.0, inplace=False)
+    (word_embeddings): Embedding(2048, 1024)
+  )
+  (nar_text_embedding): TokenEmbedding(
+    (dropout): Dropout(p=0.0, inplace=False)
+    (word_embeddings): Embedding(2048, 1024)
+  )
+  (ar_audio_embedding): TokenEmbedding(
+    (dropout): Dropout(p=0.0, inplace=False)
+    (word_embeddings): Embedding(1025, 1024)
+  )
+  (ar_text_prenet): Identity()
+  (ar_audio_prenet): Identity()
+  (ar_text_position): SinePositionalEmbedding(
+    (dropout): Dropout(p=0.1, inplace=False)
+  )
+  (ar_audio_position): SinePositionalEmbedding(
+    (dropout): Dropout(p=0.1, inplace=False)
+  )
+  (ar_decoder): TransformerEncoder(
+    (layers): ModuleList(
+      (0-11): 12 x TransformerEncoderLayer(
+        (self_attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=1024, out_features=1024, bias=True)
+        )
+        (linear1): Linear(in_features=1024, out_features=4096, bias=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+        (linear2): Linear(in_features=4096, out_features=1024, bias=True)
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (dropout2): Dropout(p=0.1, inplace=False)
+        (norm1): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+        (norm2): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+      )
+    )
+    (norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+  )
+  (ar_predict_layer): Linear(in_features=1024, out_features=1025, bias=False)
+  (nar_audio_embeddings): ModuleList(
+    (0): TokenEmbedding(
+      (dropout): Dropout(p=0.0, inplace=False)
+      (word_embeddings): Embedding(1025, 1024)
+    )
+    (1-7): 7 x TokenEmbedding(
+      (dropout): Dropout(p=0.0, inplace=False)
+      (word_embeddings): Embedding(1024, 1024)
+    )
+  )
+  (nar_text_prenet): Identity()
+  (nar_audio_prenet): Identity()
+  (nar_text_position): SinePositionalEmbedding(
+    (dropout): Dropout(p=0.0, inplace=False)
+  )
+  (nar_audio_position): SinePositionalEmbedding(
+    (dropout): Dropout(p=0.1, inplace=False)
+  )
+  (nar_decoder): TransformerEncoder(
+    (layers): ModuleList(
+      (0-11): 12 x TransformerEncoderLayer(
+        (self_attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=1024, out_features=1024, bias=True)
+        )
+        (linear1): Linear(in_features=1024, out_features=4096, bias=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+        (linear2): Linear(in_features=4096, out_features=1024, bias=True)
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (dropout2): Dropout(p=0.1, inplace=False)
+        (norm1): AdaptiveLayerNorm(
+          (project_layer): Linear(in_features=1024, out_features=2048, bias=True)
+          (norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+        )
+        (norm2): AdaptiveLayerNorm(
+          (project_layer): Linear(in_features=1024, out_features=2048, bias=True)
+          (norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+        )
+      )
+    )
+    (norm): AdaptiveLayerNorm(
+      (project_layer): Linear(in_features=1024, out_features=2048, bias=True)
+      (norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (nar_predict_layers): ModuleList(
+    (0-6): 7 x Linear(in_features=1024, out_features=1024, bias=False)
+  )
+  (nar_stage_embeddings): ModuleList(
+    (0-6): 7 x TokenEmbedding(
+      (dropout): Dropout(p=0.0, inplace=False)
+      (word_embeddings): Embedding(1, 1024)
+    )
+  )
+  (ar_language_embedding): TokenEmbedding(
+    (dropout): Dropout(p=0.0, inplace=False)
+    (word_embeddings): Embedding(3, 1024)
+  )
+  (nar_language_embedding): TokenEmbedding(
+    (dropout): Dropout(p=0.0, inplace=False)
+    (word_embeddings): Embedding(3, 1024)
+  )
+)
