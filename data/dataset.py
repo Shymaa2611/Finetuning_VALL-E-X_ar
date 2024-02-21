@@ -226,6 +226,7 @@ def collate(batch):
         #print(audio_features_lens)
         #print(audio_features.shape)
         audio_features_mean = np.mean(audio_features, axis=1)  
+        print(audio_features_mean)
         audio_features_s[i, :audio_features_lens, :] = torch.LongTensor(audio_features_mean)
 
         text_tokens = b['text_tokens']

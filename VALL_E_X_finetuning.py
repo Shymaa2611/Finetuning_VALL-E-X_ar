@@ -202,7 +202,7 @@ if __name__ == "__main__":
     valid_loader = torch.utils.data.DataLoader(test_dataset,batch_size=8,collate_fn=collate)
     run(model,train_loader,valid_loader,checkpoint)
     #model = DDP(model, device_ids=[0], find_unused_parameters=True)
-    print(model)
+    #print(model)
     #print(checkpoint)
    
 

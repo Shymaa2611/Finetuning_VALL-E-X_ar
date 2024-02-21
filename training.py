@@ -4,7 +4,7 @@ from  typing import Tuple
 from torch import nn,Union, Optional,Dict,Any
 from torch.nn.parallel import DistributedDataParallel as DDP
 import torch
-from training_utils import AttributeDict,MetricsTracker,set_batch_count,display_and_save_batch,update_averaged_model,Eden,ScaledAdam,LRScheduler,Eve,get_scheduler,str2bool,load_checkpoint,fix_random_seed
+from training_utils import AttributeDict,MetricsTracker,set_batch_count,display_and_save_batch,update_averaged_model,Eden,ScaledAdam,LRScheduler,Eve,get_scheduler,str2bool,load_checkpoint,fix_random_seed,save_checkpoint
 from pathlib import Path
 import logging
 import random
@@ -544,7 +544,7 @@ def get_parser():
     parser.add_argument(
         "--exp-dir",
         type=str,
-        default="exp/valle_dev",
+        default="exp/vallex_dev",
         help="""The experiment dir.
         It specifies the directory where all training related
         files, e.g., checkpoints, log, etc, are saved
@@ -814,11 +814,11 @@ def run(model,train_loader,valid_loader,checkpoints):
         scheduler.load_state_dict(checkpoints["scheduler"])
 
     
-    if params.start_batch > 0 and checkpoints and "sampler" in checkpoints:
+    """ if params.start_batch > 0 and checkpoints and "sampler" in checkpoints:
         sampler_state_dict = checkpoints["sampler"]
     else:
         sampler_state_dict = None
-
+ """
     scaler = GradScaler(
         enabled=(params.dtype in ["fp16", "float16"]), init_scale=1.0
     )
@@ -848,7 +848,15 @@ def run(model,train_loader,valid_loader,checkpoints):
             tb_writer=tb_writer,
             rank=rank,
         )
-
+        save_checkpoint(
+            params=params,
+            model=model,
+            model_avg=model_avg,
+            optimizer=optimizer,
+            scheduler=scheduler,
+            scaler=scaler,
+            rank=rank,
+        )
        
 
     logging.info("Done!")

@@ -1418,3 +1418,60 @@ def uuid4():
         return _lhotse_uuid()
     return uuid.uuid4()
 
+
+def save_checkpoint(
+    filename: Path,
+    model: Union[nn.Module, DDP],
+    model_avg: Optional[nn.Module] = None,
+    params: Optional[Dict[str, Any]] = None,
+    optimizer: Optional[Optimizer] = None,
+    scheduler: Optional[LRSchedulerType] = None,
+    scaler: Optional[GradScaler] = None,
+    rank: int = 0,
+) -> None:
+    """Save training information to a file.
+
+    Args:
+      filename:
+        The checkpoint filename.
+      model:
+        The model to be saved. We only save its `state_dict()`.
+      model_avg:
+        The stored model averaged from the start of training.
+      params:
+        User defined parameters, e.g., epoch, loss.
+      optimizer:
+        The optimizer to be saved. We only save its `state_dict()`.
+      scheduler:
+        The scheduler to be saved. We only save its `state_dict()`.
+      scalar:
+        The GradScaler to be saved. We only save its `state_dict()`.
+      rank:
+        Used in DDP. We save checkpoint only for the node whose rank is 0.
+    Returns:
+      Return None.
+    """
+    if rank != 0:
+        return
+
+    logging.info(f"Saving checkpoint to {filename}")
+
+    if isinstance(model, DDP):
+        model = model.module
+
+    checkpoint = {
+        "model": model.state_dict(),
+        "optimizer": optimizer.state_dict() if optimizer is not None else None,
+        "scheduler": scheduler.state_dict() if scheduler is not None else None,
+        "grad_scaler": scaler.state_dict() if scaler is not None else None,
+    }
+
+    if model_avg is not None:
+        checkpoint["model_avg"] = model_avg.to(torch.float32).state_dict()
+
+    if params:
+        for k, v in params.items():
+            assert k not in checkpoint
+            checkpoint[k] = v
+
+    torch.save(checkpoint, filename)
