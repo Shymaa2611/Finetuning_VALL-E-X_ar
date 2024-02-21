@@ -857,5 +857,3 @@ def run(model,train_loader,valid_loader,checkpoints):
 
 
 
-if __name__=='__main__':
-    print("hello for train vall-e-x")
