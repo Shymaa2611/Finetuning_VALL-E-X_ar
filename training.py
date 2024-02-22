@@ -685,8 +685,6 @@ def get_parser():
 
     return parser
 
-
-
 def run(model,train_loader,valid_loader,checkpoints):
     parser = get_parser()
     args = parser.parse_args()
@@ -710,7 +708,6 @@ def run(model,train_loader,valid_loader,checkpoints):
     device = torch.device("cpu")
     if torch.cuda.is_available():
         device = torch.device("cuda", rank)
-        # https://pytorch.org/docs/stable/notes/cuda.html#tensorfloat-32-tf32-on-ampere-devices
         torch.backends.cudnn.allow_tf32 = True
         torch.backends.cuda.matmul.allow_tf32 = True
 
@@ -848,7 +845,9 @@ def run(model,train_loader,valid_loader,checkpoints):
             tb_writer=tb_writer,
             rank=rank,
         )
+        
         save_checkpoint(
+            filename="vallex_ar_checkpoint.pt",
             params=params,
             model=model,
             model_avg=model_avg,
