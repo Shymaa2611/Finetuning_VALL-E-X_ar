@@ -89,8 +89,9 @@ def create_dataset(data_dir, dataloader_process_only):
         return dataloader 
 
 #load pretrained model 
-if not os.path.exists(checkpoints_dir): os.mkdir(checkpoints_dir)
-if not os.path.exists(os.path.join(checkpoints_dir, model_checkpoint_name)):
+def load_model():
+   if not os.path.exists(checkpoints_dir): os.mkdir(checkpoints_dir)
+   if not os.path.exists(os.path.join(checkpoints_dir, model_checkpoint_name)):
         import wget
         try:
             logging.info(
@@ -103,7 +104,7 @@ if not os.path.exists(os.path.join(checkpoints_dir, model_checkpoint_name)):
                 "\n Model weights download failed, please go to 'https://huggingface.co/Plachta/VALL-E-X/resolve/main/vallex-checkpoint.pt'"
                 "\n manually download model weights and put it to {} .".format(os.getcwd() + "\checkpoints"))
     # VALL-E
-model = VALLE(
+   model = VALLE(
         N_DIM,
         NUM_HEAD,
         NUM_LAYERS,
@@ -115,10 +116,10 @@ model = VALLE(
         prepend_bos=True,
         num_quantizers=NUM_QUANTIZERS,
     ).to(device)
-checkpoint = torch.load(os.path.join(checkpoints_dir, model_checkpoint_name), map_location='cpu')
-model.load_state_dict(checkpoint["model"])
-
-print("finish load pretrained model")
+   checkpoint = torch.load(os.path.join(checkpoints_dir, model_checkpoint_name), map_location='cpu')
+   model.load_state_dict(checkpoint["model"])
+   print("finish load pretrained model")
+   return model,checkpoint
 
 #fine tuning model
 """ class updateTrainer(Trainer):
@@ -200,6 +201,7 @@ if __name__ == "__main__":
     print("finish test dataset")
     train_loader = torch.utils.data.DataLoader(test_dataset,batch_size=16,collate_fn=collate)
     valid_loader = torch.utils.data.DataLoader(test_dataset,batch_size=8,collate_fn=collate)
+    model,checkpoint=load_model()
     run(model,train_loader,valid_loader,checkpoint)
     #model = DDP(model, device_ids=[0], find_unused_parameters=True)
     #print(model)
