@@ -211,7 +211,7 @@ def collate(batch):
 
     text_tokens_lens_s = [b.get('text_tokens_lens', None) for b in batch if b.get('text_tokens_lens') is not None]
 
-    audio_features_s = torch.zeros([len(batch), max(audio_features_lens_s), 8], dtype=torch.int64) - 1 # audio pad with -1
+    audio_features_s = torch.zeros([len(batch), max(audio_features_lens_s),8], dtype=torch.int64) - 1 # audio pad with -1
     text_tokens_s = torch.zeros([len(batch), max(text_tokens_lens_s)], dtype=torch.int64) + 3 # [PAD] token id 3
 
     language_s = [b.get('language', None) for b in batch]
@@ -223,15 +223,19 @@ def collate(batch):
     for i, b in enumerate(batch):
         audio_features = b['audio_features']
         audio_features_lens = b['audio_features_lens']
-        #print(audio_features_lens)
+        #print(audio_features_lens_s)
         #print(audio_features.shape)
-        audio_features_mean = np.mean(audio_features, axis=1)  
-        print(audio_features_mean)
-        audio_features_s[i, :audio_features_lens, :] = torch.LongTensor(audio_features_mean)
-
+        #audio_features_mean = np.median(audio_features,axis=1) 
+        #print(audio_features_mean)
+        #print(audio_features_lens)
+        #print(audio_features[1])
+        #print(audio_features[0][:audio_features_lens][:].T)
+        audio_features_s[i,:audio_features_lens,:]= torch.LongTensor(audio_features[0,:audio_features_lens,:].T)
         text_tokens = b['text_tokens']
         text_tokens_lens = b['text_tokens_lens']
         text_tokens_s[i, :text_tokens_lens] = torch.LongTensor(text_tokens)
+    
+
 
     return {
         'utt_id': utt_id_s,
