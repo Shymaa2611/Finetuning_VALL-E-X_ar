@@ -22,7 +22,7 @@ from models.vallex import VALLE
 from transformers import Seq2SeqTrainingArguments, Seq2SeqTrainer
 from transformers import Trainer
 from tokenizers import Tokenizer
-from mgb2 import create_mgb2_dataset
+from mgb2 import create_dataset_parts
 from training import run
 checkpoints_dir = "./checkpoints/"
 model_checkpoint_name = "vallex-checkpoint.pt"
@@ -37,12 +37,12 @@ def prepare_dataset(name, audio_prompt_path, transcript):
     wav_pr, sr = torchaudio.load(audio_prompt_path)
     if wav_pr.size(0) == 2:
         wav_pr = wav_pr.mean(0, keepdim=True)
-    # add language id#
+    # add language 
     text_pr = "[AR]" + transcript + "[AR]"
-     # audio tokenizer#
+     # audio tokenizer
     encoded_frames = tokenize_audio(codec, (wav_pr, sr))
     audio_tokens = encoded_frames[0][0].transpose(2, 1).cpu().numpy()
-    # text tokenizer#
+    # text tokenizer
     phonemes, langs = text_tokenizer.tokenize(text=f"{text_pr}".strip())
     text_tokens, enroll_x_lens = text_collater(
         [
@@ -87,6 +87,32 @@ def create_dataset(data_dir, dataloader_process_only):
     else:
         dataloader = create_dataloader(data_dir=data_dir)
         return dataloader 
+
+def create_dataset_format():
+    #train
+    data_dir = "mgb2_dataset\\train"
+    create_dataset(data_dir=data_dir, dataloader_process_only=True) 
+    train_dataset = AudioDataset(h5_path=os.path.join(data_dir, 'audio_sum.hdf5'),
+                             ann_path=os.path.join(data_dir, 'audio_ann_sum.txt'),
+                             tokenizer_path="./utils/g2p/bpe_69.json")
+    print("finish train  dataset !")
+    #test
+    data_dir = "mgb2_dataset\\test"
+    create_dataset(data_dir=data_dir, dataloader_process_only=True) 
+    test_dataset = AudioDataset(h5_path=os.path.join(data_dir, 'audio_sum.hdf5'),
+                             ann_path=os.path.join(data_dir, 'audio_ann_sum.txt'),
+                             tokenizer_path="./utils/g2p/bpe_69.json")
+    print("finish test dataset !")
+    #dev
+    data_dir = "mgb2_dataset\\dev"
+    create_dataset(data_dir=data_dir, dataloader_process_only=True) 
+    dev_dataset = AudioDataset(h5_path=os.path.join(data_dir, 'audio_sum.hdf5'),
+                             ann_path=os.path.join(data_dir, 'audio_ann_sum.txt'),
+                             tokenizer_path="./utils/g2p/bpe_69.json")
+    print("finish dev dataset !")
+    train_loader = torch.utils.data.DataLoader(train_dataset,batch_size=16,collate_fn=collate)
+    valid_loader = torch.utils.data.DataLoader(test_dataset,batch_size=8,collate_fn=collate)
+    return train_loader,valid_loader
 
 #load pretrained model 
 def load_model():
@@ -181,26 +207,9 @@ def train_func(train_dataset,test_dataset):
 
 if __name__ == "__main__":
     #create dataset parts
-    xml_utf8 = "D:\\MachineCourse\\Graduation_Project\\dev\\xml\\utf8"
-    wav_dir = "D:\\MachineCourse\\Graduation_Project\\dev\\wav"
-    dataset_parts=["train","test","dev"]
-    # for part in dataset_parts:
-    #     create_mgb2_dataset(part,xml_utf8,wav_dir)
-    data_dir = "mgb2_dataset\\train"
-    #create_dataset(data_dir=data_dir, dataloader_process_only=True) 
-    train_dataset = AudioDataset(h5_path=os.path.join(data_dir, 'audio_sum.hdf5'),
-                             ann_path=os.path.join(data_dir, 'audio_ann_sum.txt'),
-                             tokenizer_path="./utils/g2p/bpe_69.json")
-
-    print("finish train dataset")
-    data_dir = "mgb2_dataset\\test"
-   # create_dataset(data_dir=data_dir, dataloader_process_only=True) 
-    test_dataset = AudioDataset(h5_path=os.path.join(data_dir, 'audio_sum.hdf5'),
-                             ann_path=os.path.join(data_dir, 'audio_ann_sum.txt'),
-                             tokenizer_path="./utils/g2p/bpe_69.json")
-    print("finish test dataset")
-    train_loader = torch.utils.data.DataLoader(test_dataset,batch_size=16,collate_fn=collate)
-    valid_loader = torch.utils.data.DataLoader(test_dataset,batch_size=8,collate_fn=collate)
+    dataset_dir=""
+    create_dataset_parts(dataset_dir)
+    train_loader,valid_loader=create_dataset_format()
     model,checkpoint=load_model()
     run(model,train_loader,valid_loader,checkpoint)
     #model = DDP(model, device_ids=[0], find_unused_parameters=True)
