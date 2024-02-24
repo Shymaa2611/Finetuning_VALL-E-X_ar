@@ -51,8 +51,24 @@ def create_mgb2_dataset(dataset_part, xml_utf8, wav_dir):
     except FileExistsError:
         print("Directories already exist.")
 
+def create_dataset_parts(dataset_dir):
+    dataset_parts=["train","test","dev"]
+    for part in dataset_parts:
+        if part=="train":
+             xml_utf8 = f"{dataset_dir}\\train\\xml\\utf8"
+             wav_dir = f"{dataset_dir}\\train\\wav"
+             create_mgb2_dataset(part,xml_utf8,wav_dir)
+        elif part=="test":
+             xml_utf8 = f"{dataset_dir}\\test\\xml\\utf8"
+             wav_dir = f"{dataset_dir}\\test\\wav"
+             create_mgb2_dataset(part,xml_utf8,wav_dir)
+        else:
+            xml_utf8 = f"{dataset_dir}\\dev\\xml\\utf8"
+            wav_dir = f"{dataset_dir}\\dev\\wav"
+            create_mgb2_dataset(part, xml_utf8, wav_dir)
+
+
+
 if __name__ == "__main__":
-    dataset_part = "test"
-    xml_utf8 = "D:\\MachineCourse\\Graduation_Project\\dev\\xml\\utf8"
-    wav_dir = "D:\\MachineCourse\\Graduation_Project\\dev\\wav"
-    create_mgb2_dataset(dataset_part, xml_utf8, wav_dir)
+    print("done!")
+
