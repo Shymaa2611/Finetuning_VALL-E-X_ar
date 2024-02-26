@@ -147,79 +147,16 @@ def load_model():
    print("finish load pretrained model")
    return model,checkpoint
 
-#fine tuning model
-""" class updateTrainer(Trainer):
-    def training_step(self, model,batch):
-        try:
-            #x=batch['text_tokens']
-            #x_lens=batch['text_tokens_lens']
-            #y=batch['audio_features']
-            #y_lens=batch['audio_features_lens']
-            outputs = model(batch['text_tokens'],batch['text_tokens_lens'],batch['audio_features'],batch['audio_features_lens'])
-            print(outputs)
-            loss = outputs.loss
-            #print(inputs)
-            print(loss)
-            if isinstance(loss, dict):
-                loss = loss["loss"]
-            return loss
-        except Exception as e:
-            print(f"An error occurred during training step: {e}")
-            return torch.tensor(0.0)  
-def train_func(train_dataset,test_dataset):
-   for data in train_dataset:
-      print(data)
-
-   training_args = Seq2SeqTrainingArguments(
-    output_dir="./VALL-E-X_finetuning_ar",  
-    per_device_train_batch_size=16,
-    learning_rate=1e-5,
-    warmup_steps=500,
-    max_steps=3,
-    evaluation_strategy="steps",
-    per_device_eval_batch_size=8,
-    save_steps=1000,
-    eval_steps=1000,
-    logging_steps=25,
-    report_to=["tensorboard"],
-    load_best_model_at_end=True,
-    greater_is_better=False,
-    label_names=["labels"],
-    push_to_hub=False,
-) 
-  #train_loader = torch.utils.data.DataLoader(test_dataset,batch_size=8,collate_fn=collate)
-  #test_loader = torch.utils.data.DataLoader(test_dataset,batch_size=8,collate_fn=collate)
- 
-  #data_collator=collate(train_dataset)
-  #data_collator=Collate(train_dataset)
-  
-   trainer = updateTrainer(
-    model=model,
-    args=training_args,
-    train_dataset=train_dataset,
-    eval_dataset=test_dataset,
-    #data_collator=collate,
-    #tokenizer=AudioTokenizer
-
-   )
-   return trainer 
-  """
 
 if __name__ == "__main__":
-    #create dataset parts
     dataset_dir=""
     create_dataset_parts(dataset_dir)
     train_loader,valid_loader=create_dataset_format()
     model,checkpoint=load_model()
     run(model,train_loader,valid_loader,checkpoint)
-    #model = DDP(model, device_ids=[0], find_unused_parameters=True)
-    #print(model)
-    #print(checkpoint)
+   
    
 
-    
-    #trainer=train_func(train_dataset,test_dataset)
-    #trainer.train()
 
 
 
