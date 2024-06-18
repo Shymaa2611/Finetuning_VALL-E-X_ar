@@ -8,10 +8,10 @@ VALL-E X is an amazing multilingual text-to-speech (TTS) model proposed by Micro
 
 
 ## Dataset
- - MGB2 
+ - MGB2 <br/> 
    The second edition of the Multi-Genre Broadcast (MGB-2) Challenge is an evaluation of speech recognition and lightly supervised alignment using TV recordings in Arabic.
    The speech data is broad and multi-genre, spanning the whole range of TV output, and represents a challenging task for speech technology.
-  - Data provided includes:
+  - Data provided includes:<br/>
     Approximately 1,200 hours of Arabic broadcast data, obtained from about 4,000 programmes broadcast on Aljazeera Arabic TV channel over a span of 10 years, from 2005 until September 2015.Time-aligned transcription as an output from light supervised alignment, with a varying quality of human transcription for the whole episode.More than 110 million words of Aljazeera.net website collected between 2004, and the year of 2011.
 
 
