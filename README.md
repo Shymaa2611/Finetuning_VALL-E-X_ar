@@ -23,3 +23,5 @@ VALL-E X is an amazing multilingual text-to-speech (TTS) model proposed by Micro
 ### train 
  - python VALL_E_X_finetuning.py
 
+## Checkpoint
+
