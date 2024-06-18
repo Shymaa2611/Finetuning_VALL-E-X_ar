@@ -16,11 +16,27 @@ VALL-E X is an amazing multilingual text-to-speech (TTS) model proposed by Micro
 
 
 
-## Prepare Data
+
+### Prepare Data
   - python mgb2.py
 
 ### train 
  - python VALL_E_X_finetuning.py
 
-## Checkpoint
 
+## Usage in Python
+
+```python
+from utils.generation import SAMPLE_RATE, generate_audio, preload_models
+from scipy.io.wavfile import write as write_wav
+from IPython.display import Audio
+from utils.prompt_making import make_prompt
+preload_models()
+make_prompt(name="paimon", audio_prompt_path="paimon_prompt.wav")
+text_prompt = """
+مرحبا كيف حالكم اليوم 
+"""
+audio_array = generate_audio(text_prompt, prompt="paimon")
+write_wav("vallex_generation.wav", SAMPLE_RATE, audio_array)
+Audio(audio_array, rate=SAMPLE_RATE)
+```
