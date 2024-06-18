@@ -7,7 +7,7 @@ VALL-E X is an amazing multilingual text-to-speech (TTS) model proposed by Micro
 <br>
 
 
-# Dataset
+## Dataset
  - MGB2 
    The second edition of the Multi-Genre Broadcast (MGB-2) Challenge is an evaluation of speech recognition and lightly supervised alignment using TV recordings in Arabic.
    The speech data is broad and multi-genre, spanning the whole range of TV output, and represents a challenging task for speech technology.
@@ -17,9 +17,9 @@ VALL-E X is an amazing multilingual text-to-speech (TTS) model proposed by Micro
 
 
 
-# Convert data into mainfests
+### Convert data into mainfests
   - python mgb2.py
 
-# train 
+### train 
  - python VALL_E_X_finetuning.py
 
